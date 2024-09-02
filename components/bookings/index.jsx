@@ -3,11 +3,6 @@
 import React, { useState } from "react";
 import { Input } from "@nextui-org/react";
 import Link from "next/link";
-// import { DotsIcon } from "@/components/Management/icons/accounts/dots-icon";
-// import { ExportIcon } from "@/components/Management/icons/accounts/export-icon";
-// import { InfoIcon } from "@/components/Management/icons/accounts/info-icon";
-// import { TrashIcon } from "@/components/Management/icons/accounts/trash-icon";
-// import { SettingsIcon } from "@/components/Management/icons/sidebar/settings-icon";
 import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { UsersIcon } from "@/components/icons/breadcrumb/users-icon";
 import TableWrapper from "./Table/TableWrapper";

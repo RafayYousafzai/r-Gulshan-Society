@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Modal,
   ModalContent,
@@ -16,84 +16,82 @@ import {
 } from "@nextui-org/react";
 import { updateDoc } from "@/api/functions/post";
 import getCurrentDateTime from "@/api/getCurrentDateTime";
-import { BalanceIcon } from "@/components/icons/sidebar/balance-icon";
 import { ExportIcon } from "@/components/icons/accounts/export-icon";
 
 export default function NewEntry({ item }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [amount, setAmount] = useState("");
   const [selectedQuarter, setSelectedQuarter] = useState(null);
+  const [error, setError] = useState("");
 
   const calculateQuarterDate = (startDate, quarterNumber) => {
-    // Convert start date to date object
     const startDateObj = new Date(startDate);
-    // Calculate the number of months to add based on the quarter number
-    const monthsToAdd = (quarterNumber - 1) * 3;
-    // Add months to the start date
-    startDateObj.setMonth(startDateObj.getMonth() + monthsToAdd);
-    // Format the date as desired
-    const formattedDate = startDateObj.toLocaleDateString("en-US", {
+    startDateObj.setMonth(startDateObj.getMonth() + (quarterNumber - 1) * 3);
+
+    return startDateObj.toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
     });
-    return formattedDate;
   };
 
-  const quarters = Array.from(
-    { length: parseInt(item.installmentQuarters) },
-    (_, index) => {
-      const quarterLabel = `Quarter ${index + 1}`;
-      const quarterDate = calculateQuarterDate(item.startDate, index + 1);
-      return {
-        label: `${quarterLabel} - ${quarterDate}`,
-        value: String(index + 1), // Convert index to string as Autocomplete expects string values
-        date: quarterDate,
-      };
-    }
-  );
+  // Memoize quarters to avoid recalculation on every render
+  const quarters = useMemo(() => {
+    return Array.from(
+      { length: parseInt(item.installmentQuarters) },
+      (_, index) => {
+        const quarterNumber = index + 1;
+        return {
+          label: `Quarter ${quarterNumber} - ${calculateQuarterDate(
+            item.startDate,
+            quarterNumber
+          )}`,
+          value: String(quarterNumber),
+        };
+      }
+    );
+  }, [item.installmentQuarters, item.startDate]);
 
   const handleSubmit = async () => {
+    if (!selectedQuarter) {
+      setError("Please select a quarter."); // Set error if no quarter is selected
+      return;
+    }
+
     try {
-      const currentDate = getCurrentDateTime();
+      const { date, time } = getCurrentDateTime();
       const newEntry = {
         amount: parseFloat(amount),
-        date: currentDate.date,
-        time: currentDate.time,
+        date,
+        time,
         quarter: parseInt(selectedQuarter.value),
       };
 
-      const dateTime = getCurrentDateTime();
-
       const updatedEntries = item.entries
-        ? [
-            ...item.entries,
-            {
-              ...newEntry,
-            },
-          ]
-        : [
-            {
-              ...newEntry,
-            },
-          ];
+        ? [...item.entries, newEntry]
+        : [newEntry];
 
-      // Handle form submission here
+      // Update the booking entry in Firestore
       await updateDoc("bookings", item.id, {
         ...item,
         entries: updatedEntries,
       });
 
-      console.log("bookings", item.id, {
-        ...item,
-        entries: updatedEntries,
-      });
-
-      // Close the modal after submission
+      // Reset error, form fields, and close modal
+      setError("");
+      setAmount("");
+      setSelectedQuarter(null);
       onClose();
     } catch (error) {
       console.error("Error adding installment/challan:", error);
     }
+  };
+
+  const handleQuartersSelect = (index) => {
+    const quarter = quarters[index];
+
+    setSelectedQuarter(quarter);
+    setError("");
   };
 
   return (
@@ -103,6 +101,7 @@ export default function NewEntry({ item }) {
           <ExportIcon size={20} fill="#e12e32" />
         </button>
       </Tooltip>
+
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalContent>
           <ModalHeader>New Entry</ModalHeader>
@@ -113,19 +112,19 @@ export default function NewEntry({ item }) {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
             />
-
-            <Autocomplete label="Select a Quarter" value={selectedQuarter}>
-              {quarters &&
-                quarters.map((quarter, index) => (
-                  <AutocompleteItem
-                    onClick={() => setSelectedQuarter(quarter)}
-                    key={index}
-                    value={quarter}
-                  >
-                    {quarter.label}
-                  </AutocompleteItem>
-                ))}
+            <Autocomplete
+              label="Select a Quarter"
+              value={selectedQuarter?.label || ""}
+              onSelectionChange={handleQuartersSelect}
+            >
+              {quarters.map((quarter, index) => (
+                <AutocompleteItem key={index} value={quarter.value}>
+                  {quarter.label}
+                </AutocompleteItem>
+              ))}
             </Autocomplete>
+            {error && <p style={{ color: "red" }}>{error}</p>}{" "}
+            {/* Display error if any */}
           </ModalBody>
           <ModalFooter>
             <Button color="danger" variant="light" onClick={onClose}>

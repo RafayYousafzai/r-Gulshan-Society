@@ -15,9 +15,10 @@ export default function NewPlot() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const [size, setSize] = useState(0);
+  const [name, setName] = useState("");
 
   const handleSubmit = () => {
-    postDoc({ size: size }, "plots");
+    postDoc({ name: name, size: size }, "plots");
   };
 
   return (
@@ -34,12 +35,17 @@ export default function NewPlot() {
               </ModalHeader>
               <ModalBody>
                 <Input
+                  label="Plot Name"
+                  placeholder="Enter Plot Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)} // Set plot name
+                />
+                <Input
                   type="number"
                   label="Plot Size in Marla"
                   placeholder="0.00"
-                  onChange={(e) => {
-                    setSize(e.target.value);
-                  }}
+                  value={size}
+                  onChange={(e) => setSize(e.target.value)} // Set plot size
                 />
               </ModalBody>
               <ModalFooter>

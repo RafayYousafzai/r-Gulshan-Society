@@ -21,6 +21,7 @@ export default function TableWrapper({ items }) {
       <TableHeader>
         <TableColumn>Date</TableColumn>
         <TableColumn>Time</TableColumn>
+        <TableColumn>Name</TableColumn>
         <TableColumn>Plot Size</TableColumn>
         <TableColumn>Action</TableColumn>
       </TableHeader>
@@ -30,6 +31,7 @@ export default function TableWrapper({ items }) {
             <TableRow key={item?.id}>
               <TableCell>{item?.date}</TableCell>
               <TableCell>{item?.time}</TableCell>
+              <TableCell>{item?.name}</TableCell>
               <TableCell>Marla-{item?.size}</TableCell>
               <TableCell>
                 <Tooltip content="Delete" color="danger">

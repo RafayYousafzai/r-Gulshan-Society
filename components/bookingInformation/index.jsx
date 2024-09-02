@@ -10,7 +10,6 @@ export default function BookingInformation({ item, noChallan }) {
       0
     );
   }
-  // console.log(item);
 
   return (
     <div className="mx-auto py-8 bg-white">
@@ -50,7 +49,7 @@ export default function BookingInformation({ item, noChallan }) {
           }`}
         />
         {/* <InfoItem
-          label="Total Recieved"
+          label="Total Received"
           value={`Rs. ${calculateTotalAmount()} `}
         /> */}
         <InfoItem

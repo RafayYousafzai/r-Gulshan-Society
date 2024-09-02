@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -13,28 +13,12 @@ import {
   Autocomplete,
   AutocompleteItem,
 } from "@nextui-org/react";
-import { getCollections } from "@/api/functions/get";
 import { postDoc } from "@/api/functions/post";
+import useAdminContext from "@/context/FirebaseContext";
 
 export default function NewCustomers() {
+  const { plots, customers } = useAdminContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [plots, setPlots] = useState([]);
-  const [customers, setCustomers] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const plots = await getCollections("plots");
-        setPlots(plots);
-        const customers = await getCollections("customers");
-        setCustomers(customers);
-      } catch (error) {
-        console.error("Error fetching collections:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const [formData, setFormData] = useState({
     selectedPlot: null,
@@ -62,14 +46,14 @@ export default function NewCustomers() {
   };
 
   const handleSubmit = () => {
-    // Handle form submission here
     const installmentAmount = calculateInstallment();
     const bookingData = {
       ...formData,
       installmentAmount: installmentAmount,
     };
     postDoc(bookingData, "bookings");
-    // Reset form fields
+
+    // Reset form fields after submission
     setFormData({
       selectedPlot: null,
       selectedCustomer: null,
@@ -77,7 +61,7 @@ export default function NewCustomers() {
       installmentQuarters: 0,
       startDate: "",
     });
-    onClose(); // Close the modal after submission
+    onClose();
   };
 
   return (
@@ -89,33 +73,32 @@ export default function NewCustomers() {
         <ModalContent>
           <ModalHeader>New Booking</ModalHeader>
           <ModalBody>
-            <Autocomplete label="Select a Plot" value={formData.selectedPlot}>
+            <Autocomplete
+              label="Select a Plot"
+              value={formData.selectedPlot || ""}
+              onSelectionChange={(id) => handleChange("selectedPlot", id)}
+            >
               {plots &&
                 plots.map((plot) => (
-                  <AutocompleteItem
-                    onClick={() => handleChange("selectedPlot", plot)}
-                    key={plot.id}
-                    value={plot}
-                  >
+                  <AutocompleteItem key={plot.id} value={plot.id}>
                     {plot.size}
                   </AutocompleteItem>
                 ))}
             </Autocomplete>
+
             <Autocomplete
               label="Select a Customer"
-              value={formData.selectedCustomer}
+              value={formData.selectedCustomer || ""}
+              onSelectionChange={(id) => handleChange("selectedCustomer", id)}
             >
               {customers &&
                 customers.map((customer) => (
-                  <AutocompleteItem
-                    onClick={() => handleChange("selectedCustomer", customer)}
-                    key={customer.id}
-                    value={customer}
-                  >
+                  <AutocompleteItem key={customer.id} value={customer.id}>
                     {customer.name}
                   </AutocompleteItem>
                 ))}
             </Autocomplete>
+
             <Input
               label="Total Price"
               name="totalPrice"
