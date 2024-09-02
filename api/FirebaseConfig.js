@@ -1,4 +1,4 @@
-// Import the functions you need from the SDKs you need
+"use client";
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
@@ -8,7 +8,9 @@ const firebaseConfig = {
   storageBucket: "gulshan-society-f1cf6.appspot.com",
   messagingSenderId: "396350658067",
   appId: "1:396350658067:web:e3e18ce381655a870d11e6",
-  measurementId: "G-TNXKS66CJQ"
+  measurementId: "G-TNXKS66CJQ",
 };
 
-export const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+
+export default app;

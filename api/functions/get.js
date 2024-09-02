@@ -6,8 +6,6 @@ import {
   getDoc,
   getDocs,
   getFirestore,
-  query,
-  where,
 } from "firebase/firestore";
 import { app } from "../FirebaseConfig";
 const db = getFirestore(app);

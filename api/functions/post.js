@@ -1,8 +1,6 @@
 "use client";
 
 import {
-  addDoc,
-  collection,
   doc,
   getFirestore,
   deleteDoc,
@@ -71,37 +69,6 @@ async function deleteDocument(collectionName, docId) {
   } catch (error) {
     notify("Error deleting document", error);
     return false;
-  }
-}
-
-async function storeImageInFirestore(imageUrl) {
-  try {
-    const response = await fetch(imageUrl);
-    const blob = await response.blob();
-    const imageName = `images/${Date.now()}`;
-    const storageRef = ref(storage, imageName); // Initialize the storage reference correctly
-
-    // Upload the blob to Firebase Storage
-    await uploadBytes(storageRef, blob); // Use uploadBytes() to upload the blob
-
-    // Get the download URL of the uploaded image
-    const downloadURL = await getDownloadURL(storageRef);
-
-    // Ensure the imageUrl is defined
-    if (downloadURL) {
-      // Store the download URL in Firestore
-      const success = await postDoc({ imageUrl: downloadURL }, "images");
-
-      if (success) {
-        return downloadURL; // Return the download URL
-      } else {
-        return null;
-      }
-    } else {
-      return null;
-    }
-  } catch (error) {
-    return null;
   }
 }
 

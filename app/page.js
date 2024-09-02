@@ -2,29 +2,29 @@
 
 import React, { useEffect, useState } from "react";
 import { Layout } from "@/components/layout/layout";
-// import { getCollections } from "@/api/functions/get";
+import { getCollections } from "@/api/functions/get";
 
 export default function Page() {
-  // const [collection, setCollection] = useState([]);
+  const [collection, setCollection] = useState([]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const res = await getCollections("bookings");
-  //       setCollection(res);
-  //     } catch (error) {
-  //       console.error("Error fetching collections:", error);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await getCollections("bookings");
+        setCollection(res);
+      } catch (error) {
+        console.error("Error fetching collections:", error);
+      }
+    };
 
-  //   fetchData();
-  // }, []);
+    fetchData();
+  }, []);
 
   return (
     <Layout>
       {/* <App items={collection} /> */}
 
-      <p>under deveolpement bugs expected</p>
+      <p>under development bugs expected</p>
     </Layout>
   );
 }
