@@ -1,29 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import { App } from "@/components/bookings";
-import { Layout } from "@/components/layout/layout";
-import { getCollections } from "@/api/functions/get";
+import useAdminContext from "@/context/FirebaseContext";
 
 export default function Page() {
-  const [collection, setCollection] = useState([]);
+  const { bookings } = useAdminContext();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getCollections("bookings");
-        setCollection(res);
-      } catch (error) {
-        console.error("Error fetching collections:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  return (
-    <Layout>
-      <App items={collection} />
-    </Layout>
-  );
+  return <App items={bookings} />;
 }
