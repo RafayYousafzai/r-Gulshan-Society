@@ -17,6 +17,7 @@ import {
 import { updateDoc } from "@/api/functions/post";
 import getCurrentDateTime from "@/api/getCurrentDateTime";
 import { BalanceIcon } from "@/components/icons/sidebar/balance-icon";
+import { ExportIcon } from "@/components/icons/accounts/export-icon";
 
 export default function NewEntry({ item }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -39,7 +40,6 @@ export default function NewEntry({ item }) {
     return formattedDate;
   };
 
-  // Initialize quarters array with the expected format of { label: "", value: "" }
   const quarters = Array.from(
     { length: parseInt(item.installmentQuarters) },
     (_, index) => {
@@ -55,8 +55,6 @@ export default function NewEntry({ item }) {
 
   const handleSubmit = async () => {
     try {
-      // TODO: Validate input values
-
       const currentDate = getCurrentDateTime();
       const newEntry = {
         amount: parseFloat(amount),
@@ -102,7 +100,7 @@ export default function NewEntry({ item }) {
     <>
       <Tooltip content="New Entry" color="danger">
         <button onClick={onOpen}>
-          <BalanceIcon size={20} fill="#e12e32" />
+          <ExportIcon size={20} fill="#e12e32" />
         </button>
       </Tooltip>
       <Modal isOpen={isOpen} onClose={onClose}>

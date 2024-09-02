@@ -16,11 +16,13 @@ import NewBooking from "./NewBooking/NewBooking";
 export const App = ({ items }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredUsers = items?.filter((item) =>
-    item?.selectedCustomer?.name
-      ?.toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
+  console.log(items);
+
+  const filteredBookings =
+    items &&
+    items?.filter((item) =>
+      searchTerm !== "" ? item.id?.includes(searchTerm.toLowerCase()) : items
+    );
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -61,7 +63,7 @@ export const App = ({ items }) => {
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        <TableWrapper items={filteredUsers} />
+        <TableWrapper items={filteredBookings} />
       </div>
     </div>
   );

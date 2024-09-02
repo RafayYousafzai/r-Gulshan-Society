@@ -20,8 +20,6 @@ export default function TableWrapper({ items }) {
     deleteDocument("bookings", id);
   };
 
-  console.log(items);
-
   return (
     <Table aria-label="Example static collection table">
       <TableHeader>
@@ -47,7 +45,7 @@ export default function TableWrapper({ items }) {
               <TableCell>{item?.selectedPlot?.size}</TableCell>
               <TableCell>{item?.totalPrice}</TableCell>
               <TableCell>{item?.id}</TableCell>
-              <TableCell>
+              <TableCell className="w-28 flex gap-5">
                 <NewEntry item={item} />
                 <Tooltip content="View" color="success">
                   <Link

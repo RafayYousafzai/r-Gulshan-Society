@@ -17,9 +17,11 @@ import NewPlot from "./NewPlot/NewPlot";
 export const App = ({ items }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredUsers = items?.filter((item) =>
-    item?.size?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredUsers =
+    items &&
+    items?.filter((item) =>
+      item?.size?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
