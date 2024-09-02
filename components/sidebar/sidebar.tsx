@@ -1,6 +1,5 @@
 import React from "react";
 import { Sidebar } from "./sidebar.styles";
-import { CompaniesDropdown } from "./companies-dropdown";
 import { HomeIcon } from "../icons/sidebar/home-icon";
 import { PaymentsIcon } from "../icons/sidebar/payments-icon";
 import { AccountsIcon } from "../icons/sidebar/accounts-icon";
@@ -35,9 +34,6 @@ export const SidebarWrapper = () => {
           collapsed: collapsed,
         })}
       >
-        <div className={Sidebar.Header()}>
-          <CompaniesDropdown />
-        </div>
         <div className="flex flex-col justify-between h-full">
           <div className={Sidebar.Body()}>
             <SidebarItem
