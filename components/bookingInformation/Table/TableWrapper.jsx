@@ -34,7 +34,7 @@ export default function TableWrapper({ item, noChallan }) {
   const totalInstallments = installmentQuarters;
 
   return (
-    <Table aria-label="Installment Tracking Table">
+    <Table className="w-[95%] ml-[2.5%]" aria-label="Installment Tracking Table">
       <TableHeader>
         <TableColumn>Sr No.</TableColumn>
         <TableColumn>Description</TableColumn>

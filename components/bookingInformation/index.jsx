@@ -1,19 +1,32 @@
 import { Button, Divider, Image } from "@nextui-org/react";
-import React from "react";
+import React, { useMemo } from "react";
 import TableWrapper from "./Table/TableWrapper";
 import Link from "next/link";
 
 export default function BookingInformation({ item, noChallan }) {
-  function calculateTotalAmount() {
-    return item?.entries?.reduce(
-      (total, entry) => total + (entry.amount || 0),
+  // Calculate the total amount received using memoization to avoid unnecessary recalculations
+  const totalAmountReceived = useMemo(() => {
+    return (
+      item?.entries?.reduce((total, entry) => total + (entry.amount || 0), 0) ||
       0
     );
-  }
+  }, [item]);
+
+  // Calculate total due and outstanding amounts with fallbacks for missing data
+  const totalDueAmount = useMemo(() => {
+    const installmentAmount = parseFloat(item?.installmentAmount || 0);
+    const installmentQuarters = parseInt(item?.installmentQuarters || 0);
+    return installmentAmount * installmentQuarters;
+  }, [item]);
+
+  const installmentOutstanding = useMemo(() => {
+    return totalDueAmount || 0 - totalAmountReceived || 0;
+  }, [totalDueAmount, totalAmountReceived]);
 
   return (
-    <div className="mx-auto py-8 bg-white">
-      <div className="flex justify-between items-center mx-8">
+    <div className="w-full py-8 bg-white">
+      {/* Header with logo and customer/plot details */}
+      <div className="flex justify-between items-center mx-8 w-full">
         <div className="w-1/4">
           <Image src="/logo.jpg" alt="logo" height={200} width={150} />
         </div>
@@ -21,70 +34,78 @@ export default function BookingInformation({ item, noChallan }) {
           <div className="space-y-4">
             <InfoItem
               label="Plot Size"
-              value={`${item?.selectedPlot?.size} Marla`}
+              value={`${item?.selectedPlot?.size || "N/A"} Marla`}
             />
-            <InfoItem label="Customer" value={item?.selectedCustomer?.name} />
-            <InfoItem label="CNIC" value={item?.selectedCustomer?.cnic} />
+            <InfoItem
+              label="Customer"
+              value={item?.selectedCustomer?.name || "N/A"}
+            />
+            <InfoItem
+              label="CNIC"
+              value={item?.selectedCustomer?.cnic || "N/A"}
+            />
           </div>
           <div className="space-y-4">
-            <InfoItem label="Price" value={item?.totalPrice} />
-            <InfoItem label="Address" value={item?.selectedCustomer?.address} />
+            <InfoItem
+              label="Price"
+              value={`Rs. ${item?.totalPrice || "N/A"}`}
+            />
+            <InfoItem
+              label="Address"
+              value={item?.selectedCustomer?.address || "N/A"}
+            />
           </div>
         </div>
       </div>
+
       <Divider className="my-6" />
+
       <TableWrapper item={item} noChallan={noChallan} />
+
       <Divider className="my-6" />
 
-      {/* Display remaining amount */}
-
+      {/* Footer with booking date and financial summary */}
       <div className="flex justify-between items-center mx-8">
-        <InfoItem label="Booked At" value={`${item?.date} ${item?.time}`} />
+        <InfoItem
+          label="Booked At"
+          value={`${item?.date || "N/A"} ${item?.time || ""}`}
+        />
         <div />
         <div />
         <InfoItem
           label="Total Due Amount"
-          value={`Rs. ${
-            item?.installmentAmount * parseFloat(item?.installmentQuarters)
-          }`}
+          value={`Rs. ${totalDueAmount.toFixed(2)}`}
         />
-        {/* <InfoItem
+        <InfoItem
           label="Total Received"
-          value={`Rs. ${calculateTotalAmount()} `}
-        /> */}
+          value={`Rs. ${(totalAmountReceived || 0)?.toFixed(2)}`}
+        />
         <InfoItem
           label="Installment Outstanding"
-          value={`Rs. ${
-            item?.installmentAmount * parseFloat(item?.installmentQuarters)
-          }`}
+          value={`Rs. ${installmentOutstanding.toFixed(2)}`}
         />
-        {/* <div className="flex gap-6">
-        </div> */}
-        {/* <InfoItem
-          label="Surcharge Outstanding"
-          value={`${totalSurchargeOutstanding} Rs`}
-        /> */}
       </div>
-      <div>
-        {noChallan ? null : (
+
+      {/* PDF creation button */}
+      {!noChallan && (
+        <div className="flex justify-center mt-4">
           <Link
             href={{
               pathname: `/print/${item.id}`,
-              query: {
-                id: item.id,
-              },
+              query: { id: item.id },
             }}
           >
             <Button variant="shadow" color="warning">
               Create PDF
-            </Button>{" "}
+            </Button>
           </Link>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
 
+// Reusable component to display information items with labels and values
 const InfoItem = ({ label, value }) => (
   <div>
     <p className="text-md text-gray-800">{label}</p>

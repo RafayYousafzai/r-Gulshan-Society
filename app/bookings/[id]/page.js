@@ -1,35 +1,20 @@
 "use client";
 
-import { getDocById } from "@/api/functions/get";
 import BookingInformation from "@/components/bookingInformation";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import useAdminContext from "@/context/FirebaseContext";
+import { Spinner } from "@nextui-org/react";
 
-export default function Page() {
-  const [loading, setLoading] = useState(true);
-  const [item, setItem] = useState({}); // Initialize item as an object
+export default function Page(slug) {
+  const { bookings } = useAdminContext();
 
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+  const id = slug?.searchParams?.id;
+  const booking = bookings.find((booking) => booking.id === id);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getDocById(id, "bookings");
-        setItem(res);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching booking:", error);
-        setLoading(false);
-      }
-    };
+  console.log(booking);
 
-    fetchData();
-  }, [id]);
-
-  if (loading) {
-    return <div>Loading...</div>;
+  if (!booking) {
+    return <Spinner />;
   }
 
-  return <BookingInformation item={item} />; // Pass item as an object
+  return <BookingInformation item={booking} />;
 }
