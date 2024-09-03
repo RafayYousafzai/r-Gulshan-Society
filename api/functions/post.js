@@ -7,16 +7,12 @@ import {
   updateDoc as firestoreUpdateDoc,
   setDoc,
 } from "firebase/firestore";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
-import { app } from "../FirebaseConfig";
+import app from "../FirebaseConfig";
 import getCurrentDateTime from "../getCurrentDateTime";
-// import toast from "react-hot-toast";
 
 const db = getFirestore(app);
-const storage = getStorage(app);
 
 const notify = (msg, error) => {
-  console.log(msg);
   if (error) {
     console.error(error);
   }

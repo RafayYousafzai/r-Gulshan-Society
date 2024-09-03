@@ -7,7 +7,7 @@ import {
   getDocs,
   getFirestore,
 } from "firebase/firestore";
-import { app } from "../FirebaseConfig";
+import app from "../FirebaseConfig";
 const db = getFirestore(app);
 
 async function getDocById(docId, collectionName) {
