@@ -9,7 +9,6 @@ import BookingsChart from "@/components/dashboard/BookingsChart";
 import CustomersChart from "@/components/dashboard/CustomersChart";
 import PlotTypesChart from "@/components/dashboard/PlotTypesChart";
 import RecentActivity from "@/components/dashboard/RecentActivity";
-import SearchPlots from "@/components/dashboard/SearchPlots";
 
 export default function Page() {
   const { bookings, customers, plots } = useAdminContext();

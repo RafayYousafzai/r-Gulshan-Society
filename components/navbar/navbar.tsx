@@ -1,9 +1,8 @@
-import { Avatar, Input, Link, Navbar, NavbarContent } from "@nextui-org/react";
+import { Input, Link, Navbar, NavbarContent } from "@nextui-org/react";
 import { FeedbackIcon } from "../icons/navbar/feedback-icon";
 import { GithubIcon } from "../icons/navbar/github-icon";
-import { SupportIcon } from "../icons/navbar/support-icon";
-import { SearchIcon } from "../icons/searchicon";
 import { BurguerButton } from "./burguer-button";
+import Search from "./Search";
 
 interface Props {
   children: React.ReactNode;
@@ -23,16 +22,7 @@ export const NavbarWrapper = ({ children }: Props) => {
           <BurguerButton />
         </NavbarContent>
         <NavbarContent className="w-full max-md:hidden">
-          <Input
-            startContent={<SearchIcon />}
-            isClearable
-            className="w-full"
-            classNames={{
-              input: "w-full",
-              mainWrapper: "w-full",
-            }}
-            placeholder="Search..."
-          />
+          <Search />
         </NavbarContent>
         <NavbarContent
           justify="end"
